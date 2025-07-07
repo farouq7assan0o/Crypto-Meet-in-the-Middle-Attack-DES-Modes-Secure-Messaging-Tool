@@ -1,184 +1,120 @@
+Here is a clear and professional version of your README for GitHub, aligned with your instructions:
+
+---
+
 # Crypto Final Project – Meet-in-the-Middle Attack, DES Modes, Secure Messaging Tool
 
-## **Overview**
+## Overview
 
-This project showcases a deep dive into applied cryptography using Python. It includes a complete implementation and analysis of:
+This Python-based cryptography project explores applied techniques in secure communications, encryption algorithms, and cryptanalysis. It includes implementations of:
 
-- **Meet-in-the-Middle Attack** on 2-DES  
-- **ECB vs CBC Encryption** on image data  
-- **Secure Message Exchange** using RSA, DES, and Digital Signatures  
-- **Implementation of Square and Multiply Algorithm** for modular exponentiation in RSA
+* Meet-in-the-Middle attack on 2-DES
+* Comparison of ECB and CBC encryption modes on images
+* Secure message exchange using RSA, DES, and digital signatures
+* Efficient RSA modular exponentiation with Square and Multiply
 
----
+## Part 1: Meet-in-the-Middle (MITM) Attack on 2-DES
 
-## **Part 1: Meet-in-the-Middle (MITM) Attack on 2-DES**
+This section demonstrates how the MITM technique significantly reduces the effective keyspace in 2-DES from 2^112 to 2^57 using known plaintext-ciphertext pairs.
 
-### **Attack Summary**
+Keyspace structure:
 
-2-DES applies DES encryption twice using keys `K1` and `K2`. MITM reduces the brute-force complexity from 2^112 to roughly 2^57 by matching intermediate encryption values.
+* K1 = AB13\*\*25F5231589
+* K2 = F52315\*\*AB132525
 
-**Key Templates:**
+Process:
 
-- `K1 = AB13**25F5231589`  
-- `K2 = F52315**AB132525`  
+1. Encrypt known plaintext with all 256 possible K1 candidates
+2. Decrypt known ciphertext with all 256 possible K2 candidates
+3. Match intermediate states to identify valid key pairs
 
-256 possible values per unknown (** = 8 bits).
+Recovered key pairs show the success of the attack.
 
-**Attack Steps:**
+Key methods:
 
-1. **Encrypt** known plaintext with all 256 K1 candidates.
-2. **Decrypt** known ciphertext with all 256 K2 candidates.
-3. **Compare** intermediate results to find matches.
+* mitm\_attack\_multiple\_pairs()
+* two\_des\_encrypt() and two\_des\_decrypt()
+* Custom DES with Feistel rounds, S-boxes, and permutation logic
 
-### **Recovered Keys**
+## Part 2: ECB vs CBC Mode on Image Encryption
 
-```text
-Pair 1: K1 = AB138625F5231589, K2 = F5231567AB132525  
-Pair 2: K1 = AB13AC25F5231589, K2 = F5231578AB132525  
-Pair 3: K1 = AB13FE25F5231589, K2 = F52315ABAB132525  
-Pair 4: K1 = AB13DF25F5231589, K2 = F52315CDAB132525  
-````
+The project compares visual security differences between ECB and CBC modes using encrypted grayscale images.
 
-### **Code Highlights**
+Steps:
 
-MITM implementation includes:
+* Load and flatten image
+* Encrypt with DES in ECB and CBC modes
+* Save results as encrypted image files
 
-* `mitm_attack_multiple_pairs()`
-* `two_des_encrypt()` and `two_des_decrypt()`
-* Custom DES rounds and permutation logic
+Findings:
 
-All encryption steps follow the DES structure, including:
+* ECB mode reveals patterns
+* CBC mode obscures all visual structure using IV chaining
 
-* Initial and Final Permutations
-* 16 Feistel Rounds
-* S-box substitution
-* Round Key generation
+This section emphasizes the importance of choosing proper encryption modes in data security.
 
----
+## Part 3: Secure Message Exchange with RSA and DES
 
-## **Part 2: ECB vs CBC Mode on Image Encryption**
+This module builds a secure messaging protocol using hybrid encryption.
 
-### **Key Concepts**
+Features:
 
-* **ECB** mode encrypts blocks independently. Patterns leak.
-* **CBC** mode chains blocks using XOR and an IV. No visible patterns.
+* RSA key generation and management
+* Secure DES key sharing via RSA
+* DES CBC encryption for messages and files
+* Digital signature using SHA-1 for authenticity and integrity
 
-### **Testing Steps**
+Algorithms used:
 
-1. Load and flatten a grayscale image.
-2. Encrypt using `encrypt_ecb()` and `encrypt_cbc()`.
-3. Save encrypted images as `.jpg` using Pillow and numpy.
+* Square and Multiply for efficient modular exponentiation
+* Miller-Rabin for primality testing
+* SHA-1 hashing for signatures
 
-### **Observations**
+DES keys and encrypted content demonstrate working examples of secure communication.
 
-* **ECB Encrypted Image**: Patterns are visible.
-* **CBC Encrypted Image**: Appears completely random.
+## Part 4: Square and Multiply Algorithm
 
-### **Code Snippet: ECB Mode**
+Implements fast modular exponentiation used in RSA operations.
 
-```python
-for i in range(0, len(image_data), block_size):
-    block = image_data[i:i + block_size]
-    encrypted_block = des_encrypt(block, key)
-```
+Principles:
 
-### **Why CBC is Superior**
+* Reads exponent in binary
+* Squares if bit is 0, squares and multiplies if bit is 1
+* Runs in logarithmic time relative to exponent length
 
-* Introduces randomness via IV
-* Obscures plaintext structure
-* Chaining enhances tamper-resistance
+Functions:
 
----
+* square\_and\_multiply(plaintext, e, n) for encryption
+* square\_and\_multiply(ciphertext, d, n) for decryption
 
-## **Part 3: Secure Message Exchange (RSA + DES)**
+## Screenshots
 
-### **What It Does**
+Demonstrates output of encrypted images:
 
-* Uses **RSA** for secure DES key exchange
-* Uses **DES (CBC)** for encrypting files and messages
-* Implements **Digital Signature** for message authenticity
+* CBC\_crypto.jpg vs ECB\_crypto.jpg
+* CBC\_TUX.jpg vs ECB\_TUX.jpg
+* CBC\_images.jpg vs ECB\_images.jpg
+* CBC\_topsecret.jpg vs ECB\_topsecret.jpg
 
-### **Key Features**
+## Lessons Learned
 
-* **RSA Key Generation**
-* **Shared DES Key Generation**
-* **RSA Key Encryption/Decryption**
-* **File and Message Encryption with DES**
-* **Digital Signature Creation and Verification**
+* Understood how 2-DES can be broken with meet-in-the-middle attacks
+* Gained practical insight into the weaknesses of ECB mode
+* Developed a secure communication tool using RSA and DES
+* Learned digital signature verification processes
+* Improved performance using Square and Multiply in cryptographic operations
+* Applied layered cryptography concepts and modular design
 
-### **DES Key Example**
-
-1110010111110111011010011101110111101010101000000110010000101100
-```
-
-### **Used Algorithms**
-
-* **Square and Multiply** for fast RSA exponentiation
-* **Miller-Rabin** test for primality
-* **CTS Padding** for image encryption
-* **SHA-1** for digital signature hashing
-
----
-
-## **Part 4: Square and Multiply Algorithm**
-
-### **Purpose**
-
-Efficiently calculates modular exponentiation:
-
-* `ciphertext = plaintext ^ e mod n`
-* `decrypted = ciphertext ^ d mod n`
-
-### **How It Works**
-
-* Reads binary bits of exponent
-* Squares for `0`, squares and multiplies for `1`
-* Runs in `O(log b)` instead of `O(b)`
-
-### **In This Project**
-
-Used for:
-
-* RSA Encryption: `square_and_multiply(shared_key_int, e, n)`
-* RSA Decryption: `square_and_multiply(ciphertext, d, n)`
-
----
-
-## **Screenshots**
-
-* `CBC_crypto.jpg`
-* `ECB_crypto.jpg`
-* `CBC_topsecret.jpg`
-* `ECB_topsecret.jpg`
-* `CBC_images.jpg`
-* `ECB_images.jpg`
-* `CBC_TUX.jpg`
-* `ECB_TUX.jpg`
-
----
-
-## **Lessons Learned**
-
-* Hands-on DES and RSA implementation deepened understanding of real-world cryptography.
-* Found ECB's flaws and CBC's strength in visual encryption.
-* Mastered Square and Multiply for performance-critical crypto.
-* Learned how digital signatures and key exchange protocols interact.
-* Gained insight into secure system design, modular structure, and cryptographic layering.
-
----
-
-## **Technologies Used**
+## Technologies Used
 
 * Python 3
 * Numpy, Pillow
-* Custom DES Implementation
-* Modular RSA Logic
+* Custom DES encryption
+* RSA key generation and encryption
 * ECB and CBC encryption modes
 * SHA-1 hashing
 
----
-
-## **References**
+## References
 
 * Crypto-it.net: MITM Attack
 * Wikipedia: Block Cipher Modes
@@ -186,13 +122,15 @@ Used for:
 * PracticalNetworking.net: Square and Multiply
 * RFC1423: DES-CBC
 * Xilinx Docs: CBC Internals
-* Stanford Crypto Notes
+* Stanford Cryptography Notes
 
----
-
-## **Author**
+## Author
 
 Farouq Hassan
 HTU – Blockchain and Cybersecurity
 Spring 2023–2024
 Supervisor: Sami AlMashaqbeh
+
+---
+
+Let me know if you want a tailored summary of what you learned to include on your CV.
