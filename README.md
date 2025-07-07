@@ -132,5 +132,3 @@ Spring 2023–2024
 Supervisor: Sami AlMashaqbeh
 
 ---
-
-Let me know if you want a tailored summary of what you learned to include on your CV.
