@@ -1,6 +1,4 @@
-Here is a clear and professional version of your README for GitHub, aligned with your instructions:
 
----
 
 # Crypto Final Project – Meet-in-the-Middle Attack, DES Modes, Secure Messaging Tool
 
